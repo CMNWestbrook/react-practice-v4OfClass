@@ -10,7 +10,7 @@ const petfinder = pf({
 
 // class more flexible ans state
 class App extends React.Component {
-  constructor (props) {
+  constructor (props) { // is calling parent compoment (React.Component) constructor
     super(props);
 
     this.state = {
@@ -22,11 +22,11 @@ class App extends React.Component {
       .then(data => {
         let pets;
 
-        if(data.petfinder.pets && data.petfinder.pets.pet) {  // checking extra because it's xml
+        if(data.petfinder.pets && data.petfinder.pets.pet) {  // extra checking because it's xml
           if (Array.isArray(data.petfinder.pets.pet)) {
             pets = data.petfinder.pets.pet;
           } else {
-            pets = [data.petfinder.pets.pet];
+            pets = [data.petfinder.pets.pet]; // found one so wrap in array
           }
         } else {
           pets = [];
@@ -63,10 +63,29 @@ class App extends React.Component {
     // ]);
     return (
       <div>
-        <h1>Adopt fur babies</h1> 
-        <pre><code>{JSON.stringify(this.state, null, 4)}</code></pre>
-        <Pet name="Luna" animal="doggo" breed="someFancyName" />
-        <Pet name="Star" animal="cat" breed="alien/unknown" />
+        <h1>Adopt fur babies!</h1>
+        {/* <pre><code>{JSON.stringify(this.state, null, 4)}</code></pre> */}
+        <div>
+          {this.state.pets.map(pet => {
+            let breed;
+
+            if(Array.isArray(pet.breeds.breed)) {
+              breed = pet.breeds.breed.join(", ");
+            } else {
+              breed = pet.breeds.breed;
+            }
+            return (
+              <Pet 
+                key={pet.id} // for updating in react purposes unique identifier
+                animal={pet.animal}
+                name={pet.name}
+                breed={breed}
+                media={pet.media}
+                location={`${pet.contact.city}, ${pet.contact.state}`}
+              />
+            )
+          })}
+        </div>
       </div>
     )
   }
